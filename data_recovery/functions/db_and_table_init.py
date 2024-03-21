@@ -13,21 +13,19 @@ class MeteoFrance(Base):
     __tablename__ = 'meteo_france'
 
     id = Column(Integer, primary_key=True)
-    city = Column(String(100))
+    city = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
     date = Column(DateTime)
-    tmin = Column(Float)
-    tmax = Column(Float)
-    hmin = Column(Integer)
-    hmax = Column(Integer)
-    precipitation = Column(Float)
-    sunrise = Column(BigInteger)
-    sunset = Column(BigInteger)
-    weather_desc = Column(String(100))
-    weather_icon = Column(String(100))
-    rain_status = Column(String(100))
-    readable_warnings = Column(JSON)
+    temperature = Column(Float)
+    humidity = Column(Float)
+    rain = Column(String)
+    snow = Column(String)
+    clouds = Column(Integer)
+    wind = Column(String)
+    weather_desc = Column(String)
+    weather_icon = Column(String)
+    readable_warnings = Column(String)
 
 def connect_to_database():
     # Create the engine

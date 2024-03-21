@@ -24,11 +24,11 @@ for c in cities:
     my_place_weather_forecast = client.get_forecast_for_place(my_place)
 
     # Get the daily forecast
-    my_place_daily_forecast = my_place_weather_forecast.daily_forecast
+    my_place_hourly_forecast = my_place_weather_forecast.forecast
 
     # Insert the data into the database
-    for day in my_place_daily_forecast:
-        insert_weather_data(conn, client, my_place, my_place_weather_forecast, day)
+    for hour in my_place_hourly_forecast:
+        insert_weather_data(conn, client, my_place, my_place_weather_forecast, hour)
 
 # Delete former data
 delete_former_data(conn)

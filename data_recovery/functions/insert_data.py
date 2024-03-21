@@ -14,34 +14,31 @@ class MeteoFrance(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     date = Column(DateTime)
-    tmin = Column(Float)
-    tmax = Column(Float)
-    hmin = Column(Float)
-    hmax = Column(Float)
-    precipitation = Column(Float)
-    sunrise = Column(DateTime)
-    sunset = Column(DateTime)
+    temperature = Column(Float)
+    humidity = Column(Float)
+    rain = Column(String)
+    snow = Column(String)
+    clouds = Column(Integer)
+    wind = Column(String)
     weather_desc = Column(String)
     weather_icon = Column(String)
-    rain_status = Column(String)
     readable_warnings = Column(String)
 
-def insert_weather_data(session, client, my_place, my_place_weather_forecast, day):
-    # Convert day['dt'] from bigint to DateTime
-    date = datetime.fromtimestamp(day['dt'])
+def insert_weather_data(session, client, my_place, my_place_weather_forecast, hour):
+    # Convert hour['dt'] from bigint to DateTime
+    date = datetime.fromtimestamp(hour['dt'])
 
     # Initialize values
-    rain_status = "No rain forecast available."
-    readable_warnings = {'result': "No weather alerts available."}
+    readable_warnings = "No weather alerts available."
     weather_desc = "No weather description available."
     weather_icon = "No weather icon available."
+    snow = "No snow forecast available."
+    rain = "No rain forecast available."
+    wind = "No wind forecast available."
+    clouds = "No cloud forecast available."
 
-    # Check if rain status, wheather and warnings are available
+    # Check if rain status, weather and warnings are available
     if my_place_weather_forecast.position.get('rain_product_available'):
-        # Fetch weather description and icon if available
-        if day['weather12H']:
-            weather_desc = day['weather12H']['desc']
-            weather_icon = day['weather12H']['icon']
         # Fetch weather alerts
         if my_place.admin2 and len(my_place.admin2) < 3:
             my_place_weather_alerts = client.get_warning_current_phenomenoms(
@@ -50,34 +47,29 @@ def insert_weather_data(session, client, my_place, my_place_weather_forecast, da
             readable_warnings = readeable_phenomenoms_dict(
                 my_place_weather_alerts.phenomenons_max_colors
             )
-        my_place_rain_forecast = client.get_rain(my_place.latitude, my_place.longitude)
-        next_rain_dt = my_place_rain_forecast.next_rain_date_locale()
-        rain_status = "No rain expected in the following hour." if not next_rain_dt else next_rain_dt.strftime("%H:%M")
 
     weather_data = MeteoFrance(
         city=my_place.name,
         latitude=my_place_weather_forecast.position['lat'],
         longitude=my_place_weather_forecast.position['lon'],
         date=date,
-        tmin=day['T']['min'],
-        tmax=day['T']['max'],
-        hmin=day['humidity']['min'],
-        hmax=day['humidity']['max'],
-        precipitation=day['precipitation']['24h'],
-        sunrise=day['sun']['rise'],
-        sunset=day['sun']['set'],
-        weather_desc=weather_desc,
-        weather_icon=weather_icon,
-        rain_status=rain_status,
+        temperature=hour['T']['value'],
+        humidity=hour['humidity'],
+        rain=json.dumps(hour['rain']) if isinstance(hour['rain'], dict) else rain,
+        snow=json.dumps(hour['snow']) if isinstance(hour.get('snow'), dict) else snow,
+        clouds=hour['clouds'] if isinstance(hour['clouds'], int) else clouds,
+        wind=json.dumps(hour['wind']) if isinstance(hour['wind'], dict) else wind,
+        weather_desc= hour['weather']['desc'] if isinstance(hour['weather'], dict) else weather_desc,
+        weather_icon= hour['weather']['icon'] if isinstance(hour['weather'], dict) else weather_icon,
         readable_warnings=json.dumps(readable_warnings)
     )
 
     # Check if the date is greater than 14 days in the future
-    if (weather_data.date.date() - datetime.now().date()).days > 14:
+    if (weather_data.date.date() - datetime.now().date()).days < 4:
         # Add the weather data to the session
-        print(f"Inserting data for {weather_data.city} on {weather_data.date.date()}")
+        print(f"Inserting data for {weather_data.city} on {weather_data.date.date()} at {weather_data.date.time()}.")
         session.add(weather_data)
         # Commit the changes to the database
         session.commit()
     else:
-        print(f"Skipping data for {weather_data.city} on {weather_data.date.date()} as it is already in the table.")
+        print(f"Skipping data for {weather_data.city} on {weather_data.date.date()} at {weather_data.date.time()} as it is already in the table.")
