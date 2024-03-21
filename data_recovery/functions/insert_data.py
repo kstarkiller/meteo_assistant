@@ -64,7 +64,7 @@ def insert_weather_data(session, client, my_place, my_place_weather_forecast, ho
         readable_warnings=json.dumps(readable_warnings)
     )
 
-    # Check if the date is greater than 14 days in the future
+    # Check if the date is greater than 4 days in the future
     if (weather_data.date.date() - datetime.now().date()).days < 4:
         # Add the weather data to the session
         print(f"Inserting data for {weather_data.city} on {weather_data.date.date()} at {weather_data.date.time()}.")

@@ -22,8 +22,8 @@ for c in cities:
 
     # Fetch weather forecast for the location
     my_place_weather_forecast = client.get_forecast_for_place(my_place)
-
-    # Get the daily forecast
+    
+    # Get the hourly forecast
     my_place_hourly_forecast = my_place_weather_forecast.forecast
 
     # Insert the data into the database
