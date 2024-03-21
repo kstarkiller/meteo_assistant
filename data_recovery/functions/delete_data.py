@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, timedelta
 from sqlalchemy import delete
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, DateTime
@@ -24,11 +24,14 @@ class MeteoFrance(Base):
     readable_warnings = Column(String)
 
 def delete_former_data(session):
-    # Get today's date
-    today = date.today()
+    # Get the current datetime
+    now = datetime.now()
+
+    # Calculate the datetime 2 hours ago
+    two_hours_ago = now - timedelta(hours=2)
 
     # Construct the SQLAlchemy delete query
-    query = delete(MeteoFrance).where(MeteoFrance.date < today)
+    query = delete(MeteoFrance).where(MeteoFrance.date < two_hours_ago)
 
     # Execute the delete query
     session.execute(query)
