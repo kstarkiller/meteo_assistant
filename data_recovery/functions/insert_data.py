@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class MeteoFrance(Base):
-    __tablename__ = 'meteo_france'
+    __tablename__ = 'french_cities_weather'
 
     id = Column(Integer, primary_key=True)
     city = Column(String)

@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime
 Base = declarative_base()
 
 class MeteoFrance(Base):
-    __tablename__ = 'meteo_france'
+    __tablename__ = 'french_cities_weather'
 
     id = Column(Integer, primary_key=True)
     city = Column(String)
