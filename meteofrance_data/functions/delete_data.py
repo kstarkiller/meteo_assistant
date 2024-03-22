@@ -19,3 +19,11 @@ def delete_data_to_update(session):
     # Execute the delete statement
     session.execute(delete_statement)
     session.commit()
+
+def delete_all_data(session):
+    # Create a delete statement
+    delete_statement = delete(MeteoFrance)
+    
+    # Execute the delete statement
+    session.execute(delete_statement)
+    session.commit()

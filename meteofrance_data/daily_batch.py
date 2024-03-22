@@ -1,16 +1,6 @@
-import os
-
-# Detecte the current os and execute a daily cron job accordingly
-if os.name == 'nt':
-    # Windows
-    os.system('python b16_meteo_assistant\\repo_b16\\data_recovery\\daily_batch.py')
-else:
-    # Unix
-    os.system('python b16_meteo_assistant/repo_b16/data_recovery/daily_batch.py')
-
 from functions.db_and_table_init import connect_to_database, create_table
 from functions.insert_data import insert_weather_data
-from functions.delete_data import delete_past_data, delete_data_to_update
+from functions.delete_data import delete_all_data
 from functions.fetch_data import fetch_api_forecast
 from cities import cities
 
@@ -20,8 +10,8 @@ conn = connect_to_database()
 # Create the table if it doesn't exist
 create_table(conn)
 
-# Delete data to update
-delete_data_to_update(conn)
+# Delete all data from the table as predictions have changed
+delete_all_data(conn)
 
 # Iterate over cities and fetch weather data    
 for c in cities:
@@ -33,10 +23,6 @@ for c in cities:
         total += insert_weather_data(conn, client, my_place, my_place_weather_forecast, hour)
     
     print(f"{total} rows inserted for {my_place.name}.")
-
-# Delete former data
-delete_past_data(conn)
-print("Former data deleted.")
 
 # Close the connection
 conn.close()
