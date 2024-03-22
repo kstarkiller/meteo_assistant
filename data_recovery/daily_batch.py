@@ -27,14 +27,15 @@ for c in cities:
     my_place_hourly_forecast = my_place_weather_forecast.forecast
 
     # Insert the data into the database
+    total = 0
     for hour in my_place_hourly_forecast:
-        insert_weather_data(conn, client, my_place, my_place_weather_forecast, hour)
+        total += insert_weather_data(conn, client, my_place, my_place_weather_forecast, hour)
+    
+    print(f"{total} rows inserted for {my_place.name}.")
 
 # Delete former data
 delete_former_data(conn)
-
-# Commit the transaction
-conn.commit()
+print("Former data deleted.")
 
 # Close the connection
 conn.close()

@@ -9,6 +9,7 @@ from hidden import DATABASE, USER, PASSWORD, HOST, PORT
 
 Base = declarative_base()
 
+
 class MeteoFrance(Base):
     __tablename__ = 'french_cities_weather'
 
@@ -26,6 +27,7 @@ class MeteoFrance(Base):
     weather_desc = Column(String)
     weather_icon = Column(String)
     readable_warnings = Column(String)
+    add_date = Column(DateTime)
 
 def connect_to_database():
     # Create the engine

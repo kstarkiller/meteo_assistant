@@ -23,6 +23,7 @@ class MeteoFrance(Base):
     weather_desc = Column(String)
     weather_icon = Column(String)
     readable_warnings = Column(String)
+    add_date = Column(DateTime)
 
 def insert_weather_data(session, client, my_place, my_place_weather_forecast, hour):
     # Convert hour['dt'] from bigint to DateTime
@@ -61,15 +62,20 @@ def insert_weather_data(session, client, my_place, my_place_weather_forecast, ho
         wind=json.dumps(hour['wind']) if isinstance(hour['wind'], dict) else wind,
         weather_desc= hour['weather']['desc'] if isinstance(hour['weather'], dict) else weather_desc,
         weather_icon= hour['weather']['icon'] if isinstance(hour['weather'], dict) else weather_icon,
-        readable_warnings=json.dumps(readable_warnings)
+        readable_warnings=json.dumps(readable_warnings),
+        add_date=datetime.now()
     )
 
-    # Check if the date is greater than 4 days in the future
-    if (weather_data.date.date() - datetime.now().date()).days < 4:
+    # Check if the date is 4 days from now
+    if (weather_data.date.date() - datetime.now().date()).days < 3:
         # Add the weather data to the session
-        print(f"Inserting data for {weather_data.city} on {weather_data.date.date()} at {weather_data.date.time()}.")
         session.add(weather_data)
         # Commit the changes to the database
         session.commit()
+
+        return 1
+    
     else:
-        print(f"Skipping data for {weather_data.city} on {weather_data.date.date()} at {weather_data.date.time()} as it is already in the table.")
+        return 0
+
+    

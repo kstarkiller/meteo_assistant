@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
+from sqlalchemy.sql.expression import extract
 from sqlalchemy import delete
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, DateTime
 
 Base = declarative_base()
+
 
 class MeteoFrance(Base):
     __tablename__ = 'french_cities_weather'
@@ -22,16 +24,17 @@ class MeteoFrance(Base):
     weather_desc = Column(String)
     weather_icon = Column(String)
     readable_warnings = Column(String)
+    add_date = Column(DateTime)
 
 def delete_former_data(session):
     # Get the current datetime
     now = datetime.now()
 
-    # Calculate the datetime 2 hours ago
-    two_hours_ago = now - timedelta(hours=2)
-
     # Construct the SQLAlchemy delete query
-    query = delete(MeteoFrance).where(MeteoFrance.date < two_hours_ago)
+    query = delete(MeteoFrance).where(MeteoFrance.date < now - timedelta(days=1))
 
     # Execute the delete query
     session.execute(query)
+
+    # Commit the transaction
+    session.commit()
