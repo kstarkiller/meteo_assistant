@@ -2,14 +2,13 @@ import json
 from datetime import datetime
 
 from functions.weather_class import MeteoFrance
-from functions.fetch_alerts import fetch_weather_alerts
+from functions.fetch_data import fetch_weather_alerts
 
 def insert_weather_data(session, client, my_place, my_place_weather_forecast, hour):
     # Convert hour['dt'] from bigint to DateTime
     date = datetime.fromtimestamp(hour['dt'])
 
     # Initialize values
-    readable_warnings = "No weather alerts available."
     weather_desc = "No weather description available."
     weather_icon = "No weather icon available."
     snow = "No snow forecast available."
