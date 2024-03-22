@@ -37,7 +37,7 @@ def insert_weather_data(session, client, my_place, my_place_weather_forecast, ho
     )
 
     # Check if the date is 4 days from now
-    if (weather_data.date.date() - datetime.now().date()).days == 4:
+    if (weather_data.date.date() - datetime.now().date()).days == 8 :
         # Add the weather data to the session
         session.add(weather_data)
         # Commit the changes to the database
