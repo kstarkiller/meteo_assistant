@@ -1,29 +1,8 @@
 import json
 from datetime import datetime
-from meteofrance_api.helpers import readeable_phenomenoms_dict
-from sqlalchemy import Column, Integer, String, Float, DateTime
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
-
-class MeteoFrance(Base):
-    __tablename__ = 'french_cities_weather'
-
-    id = Column(Integer, primary_key=True)
-    city = Column(String)
-    latitude = Column(Float)
-    longitude = Column(Float)
-    date = Column(DateTime)
-    temperature = Column(Float)
-    humidity = Column(Float)
-    rain = Column(String)
-    snow = Column(String)
-    clouds = Column(Integer)
-    wind = Column(String)
-    weather_desc = Column(String)
-    weather_icon = Column(String)
-    readable_warnings = Column(String)
-    add_date = Column(DateTime)
+from functions.weather_class import MeteoFrance
+from functions.fetch_alerts import fetch_weather_alerts
 
 def insert_weather_data(session, client, my_place, my_place_weather_forecast, hour):
     # Convert hour['dt'] from bigint to DateTime
@@ -38,16 +17,7 @@ def insert_weather_data(session, client, my_place, my_place_weather_forecast, ho
     wind = "No wind forecast available."
     clouds = "No cloud forecast available."
 
-    # Check if rain status, weather and warnings are available
-    if my_place_weather_forecast.position.get('rain_product_available'):
-        # Fetch weather alerts
-        if my_place.admin2 and len(my_place.admin2) < 3:
-            my_place_weather_alerts = client.get_warning_current_phenomenoms(
-                my_place.admin2
-            )
-            readable_warnings = readeable_phenomenoms_dict(
-                my_place_weather_alerts.phenomenons_max_colors
-            )
+    readable_warnings = fetch_weather_alerts(my_place, my_place_weather_forecast, client)
 
     weather_data = MeteoFrance(
         city=my_place.name,
@@ -67,7 +37,7 @@ def insert_weather_data(session, client, my_place, my_place_weather_forecast, ho
     )
 
     # Check if the date is 4 days from now
-    if (weather_data.date.date() - datetime.now().date()).days < 3:
+    if (weather_data.date.date() - datetime.now().date()).days == 4:
         # Add the weather data to the session
         session.add(weather_data)
         # Commit the changes to the database
