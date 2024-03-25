@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)))
 from hidden import DATABASE, USER, PASSWORD, HOST, PORT
-from repo_b16.meteofrance_data.cities import cities
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+from meteofrance_data.cities import cities
 
 def connect_to_database():
     # Create the engine
