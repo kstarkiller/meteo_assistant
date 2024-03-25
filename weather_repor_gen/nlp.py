@@ -2,6 +2,8 @@ import sys
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, StreamingResponse
+import io
 import uvicorn
 import json
 import requests
@@ -16,7 +18,7 @@ from retrieve_data_from_db import fetch_data_from_db
 
 # Set the API key and the headers
 headers = {"Authorization": "Bearer " + B16_API_KEY}
-text_provider = "mistral"
+text_provider = "openai"
 speech_provider = "google"
 text_url = "https://api.edenai.run/v2/text/generation"
 speech_url = "https://api.edenai.run/v2/audio/text_to_speech"
@@ -39,7 +41,7 @@ speech_payload = {
         "volume": 0,
         "sampling_rate": 0,
         "providers": speech_provider,
-        "language": "en-GB",
+        "language": "fr-FR",
         "option": "FEMALE" 
     }
 
@@ -66,13 +68,12 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         hour = time(hour, 0, 0)
 
     # Fetch the weather data from the database
-    if hour:
-        weather_data = fetch_data_from_db(city, date, hour)
-        text_payload["text"] = f"Donne-moi la météo à {hour} pour {city} : {weather_data}."
-
+    weather_data = fetch_data_from_db(city, date, hour)
+    
+    if weather_data == "Ville non reconnue.":
+        return "Ville non reconnue."
     else:
-        weather_data = fetch_data_from_db(city, date)
-        text_payload["text"] = f"Donne-moi la météo moyenne du jour pour {city} : {weather_data}."
+        text_payload["text"] = f"Donne moi un bulletin météo pour {city} le {date}, uniquement basé sur ces données : {weather_data}. Et ne fais aucune mention de la précision des données."
 
     text_response = requests.post(text_url, json=text_payload, headers=headers)
     text_result = json.loads(text_response.text)[text_provider]['generated_text']
@@ -86,17 +87,17 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         if speech_response.status_code == 200:
             if speech_result:
                 audio_bytes = base64.b64decode(speech_result)
-                with open("audio_result/audio.mp3", "wb") as audio_file:
-                    audio_file.write(audio_bytes)
+                with open("audio_result/audio.mp3", "wb") as f:
+                    f.write(audio_bytes)
                 print(text_result)
-                return audio_bytes
+                return FileResponse("audio_result/audio.mp3", media_type="audio/mpeg")
+                # return StreamingResponse(io.BytesIO(audio_bytes), media_type="audio/mpeg")
             
             else:
                 return "Aucune donnée audio disponible dans la réponse."
             
         else:
-            return f"Erreur lors de la requête audio : {speech_response.status_code} - {speech_response.text}"
-        
+            return f"Erreur lors de la requête audio : {speech_response.status_code} - {speech_response.text}"    
     else:
         return f"Erreur lors de la requête texte : {text_response.status_code} - {text_response.text}"
 
