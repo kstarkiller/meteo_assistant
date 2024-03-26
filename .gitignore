@@ -12,8 +12,11 @@ __pycache__/
 # Docker
 Dockerfile
 .dockerignore
+
+# Useless files
 meteofrance_data/requirements.txt
 weather_report_gen/requirements.txt
+weather_report_gen/cities.py
 
 # Distribution / packaging
 .Python
@@ -167,6 +170,3 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-weather_repor_gen/requirements.txt
-weather_repor_gen/cities.py
-weather_report_gen/cities.py
