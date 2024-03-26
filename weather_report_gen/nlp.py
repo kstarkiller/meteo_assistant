@@ -10,6 +10,12 @@ from datetime import time
 from typing import Optional
 import base64
 
+import logging
+import uuid
+
+# Configure the logger
+logging.basicConfig(filename='logs/app.txt', filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
 B16_API_KEY = os.getenv("B16_API_KEY")
 
 from retrieve_data_from_db import fetch_data_from_db
@@ -61,20 +67,26 @@ async def read_item(prompt):
 
 @app.post("/weather_request/")
 async def bot_request(city: str, date: str, hour: Optional[int] = None):
+    request_id = uuid.uuid4()
+    logging.info('Received a request with ID: %s for city: %s, date: %s, hour: %s', request_id, city, date, hour)
+
     if hour is not None:
         # Convert hour to time object
         hour = time(hour, 0, 0)
 
     # Fetch the weather data from the database
     weather_data = fetch_data_from_db(city, date, hour)
+    logging.info('Request ID %s : Fetched weather data: %s', request_id, weather_data)
     
     if weather_data == "Ville non reconnue.":
+        logging.error('Request ID %s : City not recognized: %s', request_id, city)
         return "Ville non reconnue."
     else:
         text_payload["text"] = f"Donne moi un bulletin météo pour {city} le {date}, uniquement basé sur ces données : {weather_data}. Et ne fais aucune mention de la précision des données."
 
     text_response = requests.post(text_url, json=text_payload, headers=headers)
     text_result = json.loads(text_response.text)[text_provider]['generated_text']
+    logging.info('Request ID %s : Generated text: %s', request_id, text_result)
 
     # Get the speech response
     speech_payload["text"] = text_result
@@ -85,17 +97,21 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         if speech_response.status_code == 200:
             if speech_result:
                 audio_bytes = base64.b64decode(speech_result)
-                # with open("audio_result/audio.mp3", "wb") as f:
-                #     f.write(audio_bytes)
+                with open(f"logs/store/{request_id}.mp3", "wb") as f:
+                    f.write(audio_bytes)
                 print(text_result)
+                logging.info('Request ID %s : Successfully generated audio', request_id)
                 return StreamingResponse(io.BytesIO(audio_bytes), media_type="audio/mpeg")
             
             else:
+                logging.error('Request ID %s : No audio data available in the response', request_id)
                 return "Aucune donnée audio disponible dans la réponse."
             
         else:
+            logging.error('Request ID %s : Error in speech request: %s - %s', request_id, speech_response.status_code, speech_response.text)
             return f"Erreur lors de la requête audio : {speech_response.status_code} - {speech_response.text}"    
     else:
+        logging.error('Request ID %s : Error in text request: %s - %s', request_id, text_response.status_code, text_response.text)
         return f"Erreur lors de la requête texte : {text_response.status_code} - {text_response.text}"
 
 
