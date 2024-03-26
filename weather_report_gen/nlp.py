@@ -15,7 +15,7 @@ from logging.handlers import RotatingFileHandler
 import uuid
 
 # Create a rotating file handler
-log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', maxBytes=10*1024*1024, backupCount=5, encoding='utf-8', delay=False)
+log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', backupCount=5, encoding='utf-8', delay=False)
 log_handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
 
 # Get the root logger and add the handler
