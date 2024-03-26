@@ -11,8 +11,9 @@ from datetime import time
 from typing import Optional
 import base64
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
-from hidden import B16_API_KEY
+# sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
+# from hidden import B16_API_KEY
+B16_API_KEY = os.getenv("B16_API_KEY")
 
 from retrieve_data_from_db import fetch_data_from_db
 

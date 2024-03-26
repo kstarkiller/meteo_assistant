@@ -3,10 +3,20 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)))
-from hidden import DATABASE, USER, PASSWORD, HOST, PORT
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from meteofrance_data.cities import cities
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)))
+# from hidden import DATABASE, USER, PASSWORD, HOST, PORT
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+# from meteofrance_data.cities import cities
+
+# Import the required environment variables
+DATABASE = os.getenv("DATABASE")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
+
+from cities import cities
 
 def connect_to_database():
     # Create the engine
