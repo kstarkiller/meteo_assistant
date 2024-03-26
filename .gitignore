@@ -9,6 +9,10 @@ __pycache__/
 # audio files
 *.mp3
 
+# Docker
+Dockerfile
+.dockerignore
+
 # Distribution / packaging
 .Python
 build/
