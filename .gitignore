@@ -169,3 +169,4 @@ cython_debug/
 #.idea/
 weather_repor_gen/requirements.txt
 weather_repor_gen/cities.py
+weather_report_gen/cities.py
