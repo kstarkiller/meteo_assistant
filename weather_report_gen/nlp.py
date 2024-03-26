@@ -1,8 +1,7 @@
-import sys
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 import io
 import uvicorn
 import json
@@ -11,8 +10,6 @@ from datetime import time
 from typing import Optional
 import base64
 
-# sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
-# from hidden import B16_API_KEY
 B16_API_KEY = os.getenv("B16_API_KEY")
 
 from retrieve_data_from_db import fetch_data_from_db
@@ -88,11 +85,10 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         if speech_response.status_code == 200:
             if speech_result:
                 audio_bytes = base64.b64decode(speech_result)
-                with open("audio_result/audio.mp3", "wb") as f:
-                    f.write(audio_bytes)
+                # with open("audio_result/audio.mp3", "wb") as f:
+                #     f.write(audio_bytes)
                 print(text_result)
-                return FileResponse("audio_result/audio.mp3", media_type="audio/mpeg")
-                # return StreamingResponse(io.BytesIO(audio_bytes), media_type="audio/mpeg")
+                return StreamingResponse(io.BytesIO(audio_bytes), media_type="audio/mpeg")
             
             else:
                 return "Aucune donnée audio disponible dans la réponse."
