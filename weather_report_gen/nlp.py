@@ -16,7 +16,7 @@ import uuid
 
 # Create a rotating file handler
 log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', backupCount=5, encoding='utf-8', delay=False)
-log_handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+log_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 
 # Get the root logger and add the handler
 logger = logging.getLogger()
