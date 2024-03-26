@@ -11,10 +11,17 @@ from typing import Optional
 import base64
 
 import logging
+from logging.handlers import RotatingFileHandler
 import uuid
 
-# Configure the logger
-logging.basicConfig(filename='logs/app.txt', filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+# Create a rotating file handler
+log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', maxBytes=10*1024*1024, backupCount=5, encoding='utf-8', delay=False)
+log_handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+
+# Get the root logger and add the handler
+logger = logging.getLogger()
+logger.addHandler(log_handler)
+logger.setLevel(logging.INFO)
 
 B16_API_KEY = os.getenv("B16_API_KEY")
 
@@ -86,7 +93,7 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
 
     text_response = requests.post(text_url, json=text_payload, headers=headers)
     text_result = json.loads(text_response.text)[text_provider]['generated_text']
-    logging.info('Request ID %s : Generated text: %s', request_id, text_result)
+    logging.info('Request ID %s : Text successfully generated', request_id)
 
     # Get the speech response
     speech_payload["text"] = text_result
@@ -100,7 +107,7 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
                 with open(f"logs/store/{request_id}.mp3", "wb") as f:
                     f.write(audio_bytes)
                 print(text_result)
-                logging.info('Request ID %s : Successfully generated audio', request_id)
+                logging.info('Request ID %s : Audio successfully generated audio', request_id)
                 return StreamingResponse(io.BytesIO(audio_bytes), media_type="audio/mpeg")
             
             else:
