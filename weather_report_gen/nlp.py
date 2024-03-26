@@ -106,7 +106,6 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
                 audio_bytes = base64.b64decode(speech_result)
                 with open(f"logs/store/{request_id}.mp3", "wb") as f:
                     f.write(audio_bytes)
-                print(text_result)
                 logging.info('Request ID %s : Audio successfully generated audio', request_id)
                 return StreamingResponse(io.BytesIO(audio_bytes), media_type="audio/mpeg")
             
