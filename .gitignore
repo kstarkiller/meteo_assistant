@@ -3,23 +3,23 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
 # audio files
 *.mp3
 
 # Docker
 Dockerfile
 .dockerignore
+docker-compose.yml
 
 # Useless files
 meteofrance_data/requirements.txt
 weather_report_gen/requirements.txt
 weather_report_gen/cities.py
+docker-entrypoint-initdb.d/init.sql
+scripts/wait-for-it.sh
 
 # Distribution / packaging
-.Python
+.PythonS
 build/
 develop-eggs/
 dist/
