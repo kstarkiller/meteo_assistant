@@ -2,16 +2,9 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-# Import the required environment variables
-DATABASE = os.getenv("DATABASE")
-USER = os.getenv("USER")
-PASSWORD = os.getenv("PASSWORD")
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
-
 from cities import cities
 
-def connect_to_database():
+def connect_to_database(USER, PASSWORD, HOST, PORT, DATABASE):
     # Create the engine
     engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}')
 
@@ -21,9 +14,9 @@ def connect_to_database():
 
     return session
 
-def fetch_data_from_db(ville, date, heure=None):
+def fetch_data_from_db(USER, PASSWORD, HOST, PORT, DATABASE, ville, date, heure=None):
     # Connexion à la base de données
-    conn = connect_to_database()
+    conn = connect_to_database(USER, PASSWORD, HOST, PORT, DATABASE)
 
     if ville not in cities:
         return "Ville non reconnue."

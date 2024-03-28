@@ -23,13 +23,19 @@ logger = logging.getLogger()
 logger.addHandler(log_handler)
 logger.setLevel(logging.INFO)
 
+# Import the required environment variables
+DATABASE = os.getenv("DATABASE")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
 B16_API_KEY = os.getenv("B16_API_KEY")
 
 from retrieve_data_from_db import fetch_data_from_db
 
 # Set the API key and the headers
 headers = {"Authorization": "Bearer " + B16_API_KEY}
-text_provider = "openai"
+text_provider = "google"
 speech_provider = "google"
 text_url = "https://api.edenai.run/v2/text/generation"
 speech_url = "https://api.edenai.run/v2/audio/text_to_speech"
@@ -82,7 +88,7 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         hour = time(hour, 0, 0)
 
     # Fetch the weather data from the database
-    weather_data = fetch_data_from_db(city, date, hour)
+    weather_data = fetch_data_from_db(USER, PASSWORD, HOST, PORT, DATABASE, city, date, hour)
     logging.info('Request ID %s : Fetched weather data: %s', request_id, weather_data)
     
     if weather_data == "Ville non reconnue.":
