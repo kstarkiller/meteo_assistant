@@ -10,8 +10,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: weather_forecast
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: kevin
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - my_network
     healthcheck:                                     # Vérification de la santé du conteneur
@@ -28,8 +28,8 @@ services:
     container_name: batch_container
     environment:
       - DATABASE=weather_forecast
-      - USER=postgres
-      - PASSWORD=kevin
+      - USER=${POSTGRES_USER}
+      - PASSWORD=${POSTGRES_PASSWORD}
       - HOST=postgres
       - PORT=5432
     depends_on:
@@ -45,12 +45,14 @@ services:
       context: /home/kevin/simplon_wsl/briefs/b16_meteo_assistant/repo_b16/weather_report_gen
     image: mf_report_gen
     container_name: report_gen_container
+    secrets:
+      - api_key
     ports:
       - "8000:8000"
     environment:
       - DATABASE=weather_forecast
-      - USER=postgres
-      - PASSWORD=kevin
+      - USER=${POSTGRES_USER}
+      - PASSWORD=${POSTGRES_PASSWORD}
       - HOST=postgres
       - PORT=5432
     depends_on:
