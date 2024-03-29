@@ -9,15 +9,17 @@ __pycache__/
 # Docker
 Dockerfile
 .dockerignore
-docker-compose.yml
+
 
 # Useless files
-meteofrance_data/requirements.txt
-weather_report_gen/requirements.txt
 weather_report_gen/cities.py
 docker-entrypoint-initdb.d/init.sql
 scripts/wait-for-it.sh
 *.sh
+logs/
+*.log
+logs/store
+
 
 # Distribution / packaging
 .PythonS

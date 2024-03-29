@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres_container
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: weather_forecast
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kevin
+    networks:
+      - my_network
+    healthcheck:                                     # Vérification de la santé du conteneur
+      test: ["CMD-SHELL", "pg_isready -U postgres"]  # Vérifie si PostgreSQL est prêt à accepter des connexions
+      interval: 10s                                  # Fréquence de vérification de la santé
+      retries: 5                                     # Nombre de tentatives avant de considérer le conteneur comme non sain
+      timeout: 5s                                    # Délai d'attente maximal pour chaque tentative
+      start_period: 20s                              # Délai d'attente avant le début des vérifications de santé après le démarrage du conteneur
+
+  mf_data_batch:
+    build:
+      context: /home/kevin/simplon_wsl/briefs/b16_meteo_assistant/repo_b16/meteofrance_data
+    image: mf_data_batch
+    container_name: batch_container
+    environment:
+      - DATABASE=weather_forecast
+      - USER=postgres
+      - PASSWORD=kevin
+      - HOST=postgres
+      - PORT=5432
+    depends_on:
+      postgres:
+        condition: service_healthy                   # Attend que le service postgres soit opérationnel
+    volumes:
+      - ./scripts:/scripts                           # Monte le répertoire scripts dans le conteneur mf_data_batch
+    networks:
+      - my_network
+
+  mf_report_gen:
+    build:
+      context: /home/kevin/simplon_wsl/briefs/b16_meteo_assistant/repo_b16/weather_report_gen
+    image: mf_report_gen
+    container_name: report_gen_container
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE=weather_forecast
+      - USER=postgres
+      - PASSWORD=kevin
+      - HOST=postgres
+      - PORT=5432
+    depends_on:
+      - postgres
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
+
+
+
