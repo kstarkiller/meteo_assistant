@@ -65,6 +65,8 @@ networks:
 volumes:
   postgres-data:
 
-
+secrets:
+  api_key:
+    file: ../api_key.txt
 
 
