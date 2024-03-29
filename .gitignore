@@ -11,9 +11,6 @@ __pycache__/
 
 # Useless files
 weather_report_gen/cities.py
-docker-entrypoint-initdb.d/init.sql
-scripts/wait-for-it.sh
-*.sh
 logs/
 *.log
 logs/store
