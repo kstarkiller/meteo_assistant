@@ -16,6 +16,8 @@ logs/
 logs/store
 .env
 *.env
+test_azure/
+groupContainer.yaml
 
 
 # Distribution / packaging
