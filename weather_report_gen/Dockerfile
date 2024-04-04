@@ -10,10 +10,10 @@ WORKDIR /app
 COPY . .
 
 # Variables d'environnement
-ENV DB_NAME 'weather_forecast'
+ENV DATABASE 'weather_forecast'
 ENV USER 'postgres'
 ENV PASSWORD 'pauline'
-ENV DB_HOST '4.245.83.159'
+ENV HOST '10.0.1.4'
 ENV PORT '5432'
 
 # Installer les dépendances Python
