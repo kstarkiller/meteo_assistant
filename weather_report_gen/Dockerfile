@@ -10,11 +10,19 @@ WORKDIR /app
 COPY . .
 
 # Variables d'environnement
-ENV DATABASE 'weather_forecast'
-ENV USER 'postgres'
-ENV PASSWORD 'pauline'
-ENV HOST '10.0.1.4'
-ENV PORT '5432'
+ARG DATABASE
+ARG USER
+ARG PASSWORD
+ARG HOST
+ARG PORT
+ARG API_KEY
+
+ENV DATABASE=$DATABASE
+ENV USER=$USER
+ENV PASSWORD=$PASSWORD
+ENV HOST=$HOST
+ENV PORT=$PORT
+ENV API_KEY=$API_KEY
 
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r report_gen_requirements.txt

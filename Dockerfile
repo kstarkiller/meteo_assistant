@@ -1,12 +1,18 @@
 # Utiliser une image Docker officielle de PostgreSQL comme base
 FROM postgres:latest
 
-# Définir les variables d'environnement
-ENV POSTGRES_DB=weather_forecast
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=kevin
-ENV POSTGRES_HOST=localhost
-ENV POSTGRES_PORT=5432
+# Variables d'environnement
+ARG DATABASE
+ARG USER
+ARG PASSWORD
+ARG HOST
+ARG PORT
+
+ENV DATABASE=$DATABASE
+ENV USER=$USER
+ENV PASSWORD=$PASSWORD
+ENV HOST=$HOST
+ENV PORT=$PORT
 
 EXPOSE 5432
 
