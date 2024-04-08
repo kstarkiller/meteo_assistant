@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI Frontend</title>
+    <style>
+        #audioElement {
+            display: none;
+        }
+        #loadingMessage {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>FastAPI Frontend</h1>
+    <form onsubmit="event.preventDefault(); updateAudioSourceAndDisplay();">
+        <label for="city">Ville:</label><br>
+        <input type="text" id="city" name="city"><br>
+        <label for="date">Date:</label><br>
+        <input type="date" id="date" name="date"><br>
+        <input type="submit" value="Generate weather report">
+    </form>
+    <p id="loadingMessage">Génération de rapport ...</p>
+    <audio controls id="audioElement">
+        <source id="audioSource" src="" type="audio/mpeg">
+        Votre navigateur ne supporte pas l'élément audio.
+    </audio>
+    <script>
+        function displayLoadingMessage() {
+            document.getElementById('loadingMessage').style.display = 'block';
+        }
+
+        function hideLoadingMessage() {
+            document.getElementById('loadingMessage').style.display = 'none';
+        }
+
+        function updateAudioSourceAndDisplay() {
+            var city = document.getElementById('city').value;
+            var date = document.getElementById('date').value;
+            var audioSource = document.getElementById('audioSource');
+            var audioElement = document.getElementById('audioElement');
+
+            audioSource.src = 'http://localhost:8000/weather_request/?city=' + city + '&date=' + date;
+
+            audioElement.onloadstart = function() {
+                displayLoadingMessage();
+            };
+
+            audioElement.onloadeddata = function() {
+                hideLoadingMessage();
+                audioElement.style.display = 'block';
+                audioElement.play();
+            };
+
+            audioElement.load();
+        }
+    </script>
+</body>
+</html>

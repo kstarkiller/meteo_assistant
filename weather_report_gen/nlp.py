@@ -14,6 +14,10 @@ import logging
 from logging.handlers import RotatingFileHandler
 import uuid
 
+# Read the API key from the secret file
+# with open('/run/secrets/api_key', 'r') as secret_file:
+#     API_KEY = secret_file.read().strip()
+
 # Create a rotating file handler
 log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', backupCount=5, encoding='utf-8', delay=False)
 log_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
@@ -25,17 +29,17 @@ logger.setLevel(logging.INFO)
 
 # Import the required environment variables
 DATABASE = os.getenv("DATABASE")
-USER = os.getenv("USER")
-PASSWORD = os.getenv("PASSWORD")
+USER = os.getenv("USER") 
+PASSWORD = os.getenv("PASSWORD") 
 HOST = os.getenv("HOST")
 PORT = os.getenv("PORT")
-B16_API_KEY = os.getenv("B16_API_KEY")
+API_KEY = os.getenv("API_KEY")
 
 from retrieve_data_from_db import fetch_data_from_db
 
 # Set the API key and the headers
-headers = {"Authorization": "Bearer " + B16_API_KEY}
-text_provider = "google"
+headers = {"Authorization": "Bearer " + API_KEY}
+text_provider = "openai"
 speech_provider = "google"
 text_url = "https://api.edenai.run/v2/text/generation"
 speech_url = "https://api.edenai.run/v2/audio/text_to_speech"
@@ -78,7 +82,7 @@ app.add_middleware(
 async def read_item(prompt):
     return {"It works"}
 
-@app.post("/weather_request/")
+@app.get("/weather_request/")
 async def bot_request(city: str, date: str, hour: Optional[int] = None):
     request_id = uuid.uuid4()
     logging.info('Received a request with ID: %s for city: %s, date: %s, hour: %s', request_id, city, date, hour)
@@ -89,7 +93,7 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
 
     # Fetch the weather data from the database
     weather_data = fetch_data_from_db(USER, PASSWORD, HOST, PORT, DATABASE, city, date, hour)
-    logging.info('Request ID %s : Fetched weather data: %s', request_id, weather_data)
+    # logging.info('Request ID %s : Fetched weather data: %s', request_id, weather_data)
     
     if weather_data == "Ville non reconnue.":
         logging.error('Request ID %s : City not recognized: %s', request_id, city)
@@ -101,7 +105,7 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
     print(text_response.text)
     print(json.loads(text_response.text))
     text_result = json.loads(text_response.text)[text_provider]['generated_text']
-    logging.info('Request ID %s : Text successfully generated', request_id)
+    logging.info('Request ID %s : Text successfully generated : %s', request_id, text_result)
 
     # Get the speech response
     speech_payload["text"] = text_result

@@ -1,7 +1,8 @@
-import sys
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
+import time
 
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir, os.path.pardir)))
 # from hidden import DATABASE, USER, PASSWORD, HOST, PORT
@@ -17,7 +18,13 @@ PORT = os.getenv("PORT")
 
 def connect_to_database():
     # Create the engine
-    engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}')
+    while True:
+        try:
+            engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}')
+            break
+        except OperationalError:
+            print("Database not ready yet, waiting and retrying...")
+            time.sleep(1)
 
     # Create a session
     Session = sessionmaker(bind=engine)

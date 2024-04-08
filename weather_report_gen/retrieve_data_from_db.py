@@ -12,14 +12,14 @@ def connect_to_database(USER, PASSWORD, HOST, PORT, DATABASE):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    return session
+    return session 
 
 def fetch_data_from_db(USER, PASSWORD, HOST, PORT, DATABASE, ville, date, heure=None):
     # Connexion à la base de données
     conn = connect_to_database(USER, PASSWORD, HOST, PORT, DATABASE)
 
     if ville not in cities:
-        return "Ville non reconnue."
+        return "Ville non reconnue." 
     
     else :
         # Requête SQL Alchemy pour récupérer les données de prévision météo
