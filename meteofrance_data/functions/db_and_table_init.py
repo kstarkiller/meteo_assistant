@@ -6,18 +6,13 @@ import time
 
 from functions.weather_class import Base
 
-# Utiliser les variables d'environnement
-DATABASE = os.getenv('DATABASE')
-USER = os.getenv('USER')
-PASSWORD = os.getenv('PASSWORD')
-PORT = os.getenv('PORT')
-HOST = os.getenv('HOST')
+from ..config import DATABASE, USER, PASSWORD, PORT, DB_HOST
 
 def connect_to_database():
     # Create the engine
     while True:
         try:
-            engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}')
+            engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{DB_HOST}:{PORT}/{DATABASE}')
             break
         except OperationalError:
             print("Database not ready yet, waiting and retrying...")

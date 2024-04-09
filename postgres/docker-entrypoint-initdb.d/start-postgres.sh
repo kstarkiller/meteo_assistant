@@ -1,13 +1,14 @@
 #!/bin/sh
 
 # Chemin vers le fichier de secrets
-SECRETS_FILE="/run/secrets/secrets_txt"
+CONFIG_FILE="config.py"
 
 # Lire les valeurs des variables d'environnement à partir du fichier de secrets
-POSTGRES_DB=$(grep POSTGRES_DB $SECRETS_FILE | cut -d ':' -f 2 | xargs)
-POSTGRES_USER=$(grep POSTGRES_USER $SECRETS_FILE | cut -d ':' -f 2 | xargs)
-POSTGRES_PASSWORD=$(grep POSTGRES_PASSWORD $SECRETS_FILE | cut -d ':' -f 2 | xargs)
-PORT=$(grep PORT $SECRETS_FILE | cut -d ':' -f 2 | xargs)
+POSTGRES_DB=$(grep DATABASE $CONFIG_FILE | cut -d ':' -f 2 | xargs)
+POSTGRES_USER=$(grep USER $CONFIG_FILE | cut -d ':' -f 2 | xargs)
+POSTGRES_PASSWORD=$(grep PASSWORD $CONFIG_FILE | cut -d ':' -f 2 | xargs)
+PORT=$(grep PORT $CONFIG_FILE | cut -d ':' -f 2 | xargs)
+HOST=$(grep HOST $CONFIG_FILE | cut -d ':' -f 2 | xargs)
 
 # Configurer la base de données PostgreSQL avec les valeurs lues
 export PGDATA=/var/lib/postgresql/data/pgdata

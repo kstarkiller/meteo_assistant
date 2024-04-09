@@ -14,13 +14,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import uuid
 
-# Utiliser les variables d'environnement
-DATABASE = os.getenv('DATABASE')
-USER = os.getenv('USER')
-PASSWORD = os.getenv('PASSWORD')
-PORT = os.getenv('PORT')
-HOST = os.getenv('HOST')
-API_KEY = os.getenv('API_KEY')
+from config import API_KEY, USER, PASSWORD, DB_HOST, PORT, DATABASE
 
 # Create a rotating file handler
 log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', backupCount=5, encoding='utf-8', delay=False)
@@ -88,7 +82,7 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         hour = time(hour, 0, 0)
 
     # Fetch the weather data from the database
-    weather_data = fetch_data_from_db(USER, PASSWORD, HOST, PORT, DATABASE, city, date, hour)
+    weather_data = fetch_data_from_db(USER, PASSWORD, DB_HOST, PORT, DATABASE, city, date, hour)
     # logging.info('Request ID %s : Fetched weather data: %s', request_id, weather_data)
     
     if weather_data == "Ville non reconnue.":

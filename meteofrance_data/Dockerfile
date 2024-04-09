@@ -10,13 +10,6 @@ WORKDIR /app
 # Copier le contenu actuel du répertoire vers le répertoire /app dans le conteneur
 COPY . .
 
-# # Variables d'environnement
-ENV DATABASE=weather_forecast
-ENV USER=postgres
-ENV PASSWORD=kevin
-ENV HOST=localhost
-ENV PORT=5432
-
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r mf_data_requirements.txt
 

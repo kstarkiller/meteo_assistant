@@ -11,13 +11,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./start-postgres.sh:/docker-entrypoint-initdb.d/
-
-    secrets:
-      - secrets_txt
-    environment:
-      - POSTGRES_DB=/run/secrets/secrets_txt
-      - POSTGRES_USER=/run/secrets/secrets_txt
-      - POSTGRES_PASSWORD=/run/secrets/secrets_txt
     networks:
       - my_network
     healthcheck:
@@ -32,11 +25,6 @@ services:
       context: /home/kevin/simplon_wsl/briefs/b16_meteo_assistant/repo_b16/meteofrance_data
     image: data_batch
     container_name: batch_container
-    secrets:
-      - secrets_txt
-    environment:
-      - HOST=postgres
-      - PORT=5432
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,13 +38,8 @@ services:
       context: /home/kevin/simplon_wsl/briefs/b16_meteo_assistant/repo_b16/weather_report_gen
     image: report_gen
     container_name: report_gen_container
-    secrets:
-      - secrets_txt
     ports:
       - "8000:8000"
-    environment:
-      - HOST=postgres
-      - PORT=5432
     depends_on:
       - postgres
     networks:
@@ -77,10 +60,6 @@ services:
 networks:
  my_network:
     driver: bridge
-
-secrets:
- secrets_txt:
-    file: ../../secrets.txt
 
 volumes:
  postgres-data:

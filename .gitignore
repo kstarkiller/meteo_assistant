@@ -9,6 +9,9 @@ __pycache__/
 # Docker
 .dockerignore
 
+# Configs
+config.py
+
 # Useless files
 weather_report_gen/cities.py
 logs/
