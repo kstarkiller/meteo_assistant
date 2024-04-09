@@ -14,7 +14,27 @@ import logging
 from logging.handlers import RotatingFileHandler
 import uuid
 
-from config import API_KEY, USER, PASSWORD, DB_HOST, PORT, DATABASE
+# Get the environment variables
+API_KEY = os.getenv('API_KEY')
+USER = os.getenv('USER')
+PASSWORD = os.getenv('PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+PORT = os.getenv('PORT')
+DATABASE = os.getenv('DATABASE')
+
+# Check if each environment variables are set
+if not API_KEY :
+    raise ValueError("API_KEY environment variable not set")
+elif not USER :
+    raise ValueError("USER environment variable not set")
+elif not PASSWORD :
+    raise ValueError("PASSWORD environment variable not set")
+elif not DB_HOST :
+    raise ValueError("DB_HOST environment variable not set")
+elif not PORT :
+    raise ValueError("PORT environment variable not set")
+elif not DATABASE :
+    raise ValueError("DATABASE environment variable not set")
 
 # Create a rotating file handler
 log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', backupCount=5, encoding='utf-8', delay=False)

@@ -9,6 +9,14 @@ WORKDIR /app
 # Copier le contenu actuel du répertoire vers le répertoire /app dans le conteneur
 COPY . .
 
+# Récupérer les variables d'environnement
+ENV USER ${USER}
+ENV PASSWORD ${PASSWORD}
+ENV HOST ${DB_HOST}
+ENV PORT ${PORT}
+ENV DATABASE ${DATABASE}
+ENV API_KEY ${API_KEY}
+
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r report_gen_requirements.txt
 

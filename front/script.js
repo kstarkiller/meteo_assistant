@@ -1,6 +1,6 @@
 function getServerUrl() {
     // Indiquer l'URL de base du serveur
-    var serverUrl = 'report-gen.f3fdgrcvg7cgd2c3.westeurope.azurecontainer.io:8000'; 
+    var serverUrl = 'report-gen.f3fdgrcvg7cgd2c3.francecentral.azurecontainer.io:8000'; 
     return serverUrl;
 }
 
