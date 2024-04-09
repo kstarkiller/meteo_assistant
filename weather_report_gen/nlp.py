@@ -14,9 +14,13 @@ import logging
 from logging.handlers import RotatingFileHandler
 import uuid
 
-# Read the API key from the secret file
-# with open('/run/secrets/api_key', 'r') as secret_file:
-#     API_KEY = secret_file.read().strip()
+# Utiliser les variables d'environnement
+DATABASE = os.getenv('DATABASE')
+USER = os.getenv('USER')
+PASSWORD = os.getenv('PASSWORD')
+PORT = os.getenv('PORT')
+HOST = os.getenv('HOST')
+API_KEY = os.getenv('API_KEY')
 
 # Create a rotating file handler
 log_handler = RotatingFileHandler(filename='logs/app.log', mode='a', backupCount=5, encoding='utf-8', delay=False)
@@ -26,14 +30,6 @@ log_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname
 logger = logging.getLogger()
 logger.addHandler(log_handler)
 logger.setLevel(logging.INFO)
-
-# Import the required environment variables
-DATABASE = os.getenv("DATABASE")
-USER = os.getenv("USER") 
-PASSWORD = os.getenv("PASSWORD") 
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
-API_KEY = os.getenv("API_KEY")
 
 from retrieve_data_from_db import fetch_data_from_db
 

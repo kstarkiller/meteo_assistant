@@ -1,59 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FastAPI Frontend</title>
-    <style>
-        #audioElement {
-            display: none;
-        }
-        #loadingMessage {
-            display: none;
-        }
-    </style>
+    <title>Mateo</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <h1>FastAPI Frontend</h1>
-    <form onsubmit="event.preventDefault(); updateAudioSourceAndDisplay();">
-        <label for="city">Ville:</label><br>
-        <input type="text" id="city" name="city"><br>
-        <label for="date">Date:</label><br>
-        <input type="date" id="date" name="date"><br>
-        <input type="submit" value="Generate weather report">
-    </form>
-    <p id="loadingMessage">Génération de rapport ...</p>
-    <audio controls id="audioElement">
-        <source id="audioSource" src="" type="audio/mpeg">
-        Votre navigateur ne supporte pas l'élément audio.
-    </audio>
-    <script>
-        function displayLoadingMessage() {
-            document.getElementById('loadingMessage').style.display = 'block';
-        }
-
-        function hideLoadingMessage() {
-            document.getElementById('loadingMessage').style.display = 'none';
-        }
-
-        function updateAudioSourceAndDisplay() {
-            var city = document.getElementById('city').value;
-            var date = document.getElementById('date').value;
-            var audioSource = document.getElementById('audioSource');
-            var audioElement = document.getElementById('audioElement');
-
-            audioSource.src = 'http://localhost:8000/weather_request/?city=' + city + '&date=' + date;
-
-            audioElement.onloadstart = function() {
-                displayLoadingMessage();
-            };
-
-            audioElement.onloadeddata = function() {
-                hideLoadingMessage();
-                audioElement.style.display = 'block';
-                audioElement.play();
-            };
-
-            audioElement.load();
-        }
-    </script>
+    <div id="main-container">
+        <h1 class="title">Mateo</h1>
+        <h2 class="subtitle">My weather assistant</h2>
+        <p class="description">Enter a city and a date to generate a weather report</p>
+        <form onsubmit="event.preventDefault(); updateAudioSourceAndDisplay();" class="form">
+            <label for="city" class="label">City :</label><br>
+            <input type="text" id="city" name="city" class="input"><br>
+            <label for="date" class="label">Date :</label><br>
+            <input type="date" id="date" name="date" class="input"><br>
+            <input type="submit" value="Generate weather report" class="submit-button">
+        </form>
+        <p id="loadingMessage" class="loading-message">Report is being generated... Please wait.</p>
+        <audio controls id="audioElement" class="audio-element">
+            <source id="audioSource" src="" type="audio/mpeg">
+            Votre navigateur ne supporte pas l'élément audio.
+        </audio>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 FROM python:3.12-alpine
 
 # Installer le client PostgreSQL
-# RUN apk add --no-cache postgresql-client
+RUN apk add --no-cache postgresql-client
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
@@ -10,19 +10,12 @@ WORKDIR /app
 COPY . .
 
 # Variables d'environnement
-# ARG DATABASE
-# ARG USER
-# ARG PASSWORD
-# ARG HOST
-# ARG PORT
-# ARG API_KEY
-
-# ENV DATABASE=$DATABASE
-# ENV USER=$USER
-# ENV PASSWORD=$PASSWORD
-# ENV HOST=$HOST
-# ENV PORT=$PORT
-# ENV API_KEY=$API_KEY
+ENV DATABASE=weather_forecast
+ENV USER=postgres
+ENV PASSWORD=kevin
+ENV HOST=localhost
+ENV PORT=5432
+ENV API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjA5ZTFhOTMtMjZhYi00NTY3LTliODItZDk2NTk4YmNhODIyIiwidHlwZSI6ImFwaV90b2tlbiJ9.IP0_jpdfxZPAhu6R7bT64EPEXNWz2uml2YX6nzSY61I
 
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r report_gen_requirements.txt

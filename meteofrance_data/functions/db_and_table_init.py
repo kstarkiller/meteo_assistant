@@ -4,17 +4,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 import time
 
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir, os.path.pardir)))
-# from hidden import DATABASE, USER, PASSWORD, HOST, PORT
-
 from functions.weather_class import Base
 
-# Import the required environment variables
-DATABASE = os.getenv("DATABASE")
-USER = os.getenv("USER")
-PASSWORD = os.getenv("PASSWORD")
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
+# Utiliser les variables d'environnement
+DATABASE = os.getenv('DATABASE')
+USER = os.getenv('USER')
+PASSWORD = os.getenv('PASSWORD')
+PORT = os.getenv('PORT')
+HOST = os.getenv('HOST')
 
 def connect_to_database():
     # Create the engine
