@@ -4,23 +4,33 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 import time
 
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir, os.path.pardir)))
-# from hidden import DATABASE, USER, PASSWORD, HOST, PORT
+from functions.weather_class import MeteoFrance
 
-from functions.weather_class import Base
+# Get the environment variables
+USER = os.getenv('USER')
+PASSWORD = os.getenv('PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+PORT = os.getenv('PORT')
+DATABASE = os.getenv('DATABASE')
 
-# Import the required environment variables
-DATABASE = os.getenv("DATABASE")
-USER = os.getenv("USER")
-PASSWORD = os.getenv("PASSWORD")
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
+# Check if each environment variables are set
+if not USER :
+    raise ValueError("USER environment variable not set")
+elif not PASSWORD :
+    raise ValueError("PASSWORD environment variable not set")
+elif not DB_HOST :
+    raise ValueError("DB_HOST environment variable not set")
+elif not PORT :
+    raise ValueError("PORT environment variable not set")
+elif not DATABASE :
+    raise ValueError("DATABASE environment variable not set")
+
 
 def connect_to_database():
     # Create the engine
     while True:
         try:
-            engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}')
+            engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{DB_HOST}:{PORT}/{DATABASE}')
             break
         except OperationalError:
             print("Database not ready yet, waiting and retrying...")
@@ -34,4 +44,4 @@ def connect_to_database():
 
 def create_table(session):
     # Create the table if it doesn't exist
-    Base.metadata.create_all(session.get_bind())
+    MeteoFrance.metadata.create_all(session.get_bind())

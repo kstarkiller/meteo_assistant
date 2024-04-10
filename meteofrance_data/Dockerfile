@@ -2,7 +2,7 @@
 FROM python:3.12-alpine
 
 # Installer le client PostgreSQL
-# RUN apk add --no-cache postgresql-client
+RUN apk add --no-cache postgresql-client
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
@@ -10,18 +10,12 @@ WORKDIR /app
 # Copier le contenu actuel du répertoire vers le répertoire /app dans le conteneur
 COPY . .
 
-# Variables d'environnement
-# ARG DATABASE
-# ARG USER
-# ARG PASSWORD
-# ARG HOST
-# ARG PORT
-
-# ENV DATABASE=$DATABASE
-# ENV USER=$USER
-# ENV PASSWORD=$PASSWORD
-# ENV HOST=$HOST
-# ENV PORT=$PORT
+# Récupérer les variables d'environnement
+ENV USER ${USER}
+ENV PASSWORD ${PASSWORD}
+ENV HOST ${DB_HOST}
+ENV PORT ${PORT}
+ENV DATABASE ${DATABASE}
 
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r mf_data_requirements.txt
