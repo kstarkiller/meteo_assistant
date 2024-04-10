@@ -7,6 +7,11 @@ Weather datas are provided by Meteo France.
 For more information on the Meteo France API, you can visit the [official documentation](https://meteofrance-api.readthedocs.io/en/latest/).
 
 ## Getting Started
+### Before starting
+This project include a meteofrance_data/cities.py file which contains 96 french cities and which let you run and test the Mateo application.
+You can add more french or worldwide cities for a more complete assistant but you have to keep in mind that closer to continental France you are more accurate the Meteo France datas will be.
+For exemple, if you ask for a weather report of Madrid, Milan or Athens you will have accurate datas, but you won't get datas for Kyoto, Lima or Camberra.
+
 ### Project Organization
 ```
 simplon_brief16_meteo_assistant/
