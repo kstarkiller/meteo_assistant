@@ -112,12 +112,15 @@ async def bot_request(city: str, date: str, hour: Optional[int] = None):
         text_payload["text"] = f"Donne moi un bulletin météo pour {city} le {date}, uniquement basé sur ces données : {weather_data}. Et ne fais aucune mention de la précision des données."
 
     text_response = requests.post(text_url, json=text_payload, headers=headers)
+    print(text_response.text)
+    print(json.loads(text_response.text))
     text_result = json.loads(text_response.text)[text_provider]['generated_text']
     logging.info('Request ID %s : Text successfully generated : %s', request_id, text_result)
 
     # Get the speech response
     speech_payload["text"] = text_result
     speech_response = requests.post(speech_url, json=speech_payload, headers=headers)
+    # print(speech_response.text)
     speech_result = json.loads(speech_response.text)[speech_provider]['audio']
     
     if text_response.status_code == 200:
