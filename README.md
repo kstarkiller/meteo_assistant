@@ -7,6 +7,11 @@ Weather datas are provided by Meteo France.
 For more information on the Meteo France API, you can visit the [official documentation](https://meteofrance-api.readthedocs.io/en/latest/).
 
 ## Getting Started
+### Before starting
+This project include a meteofrance_data/cities.py file which contains 96 french cities and which let you run and test the Mateo application.
+You can add more french or worldwide cities for a more complete assistant but you have to keep in mind that closer to continental France you are more accurate the Meteo France datas will be.
+For exemple, if you ask for a weather report of Madrid, Milan or Athens you will have accurate datas, but you won't get datas for Kyoto, Lima or Camberra.
+
 ### Project Organization
 ```
 simplon_brief16_meteo_assistant/
@@ -40,26 +45,89 @@ simplon_brief16_meteo_assistant/
 ```
 
 ### Installation
-1. Install Docker on your system
-There are many ways to install Docker depending on your system and preferences but I advise you to install Docker Desktop : it simple to install and to use.
-To install Docker Desktop if not already done, you can visit the [official Docker website](https://www.docker.com/products/docker-desktop/).
+1. Install Docker on your system  
+There are many ways to install Docker depending on your system and preferences but I advise you to install Docker Desktop : it simple to install and to use.  
+To install Docker Desktop if not already done, you can visit the [official Docker website](https://www.docker.com/products/docker-desktop/).  
 
-2. Create a docker-compose.yml file to run images from each Dockerfile
-Here is the template of the docker-compose file I used :
- INSERT EXEMPLE
+2. Create a docker-compose.yml file to run images from each Dockerfile  
+Here is the template of the docker-compose file I used :  
+```yml
+version: '3.8'
 
-You can create the docker-compose wherever you want but make sure to replace paths to the Dockerfiles with your own absolute paths.
-Also, you must replace environnements variables by your owns, especially the Eden AI API KEY.
+services:
+ postgres:
+    build:
+      context: /path/to/the/postgres/directory/in/the/project
+    image: postgres
+    container_name: postgres_container
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=your_db_name
+      - POSTGRES_USER=your_db_user
+      - POSTGRES_PASSWORD=your_db_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 20s
 
-    If you don't have Eden AI API KEY :
-        > Visit the Eden AI website.
-        > Register for an account and retrieve your API key from the user dashboard.
+ mf_data_batch:
+    build:
+      context: /path/to/the/meteofrance_data/directory/in/the/project
+    image: data_batch
+    container_name: batch_container
+    environment:
+      - DATABASE=your_db_name
+      - USER=your_db_user
+      - PASSWORD=your_db_password
+      - DB_HOST=postgres
+      - PORT=5432
+    depends_on:
+      postgres :
+        condition: service_healthy
 
-3. Run the docker-compose file:
+ mf_report_gen:
+    build:
+      context: //path/to/the/weather_report_gen/directory/in/the/project
+    image: report_gen
+    container_name: report_gen_container
+    environment:
+      - DATABASE=your_db_name
+      - USER=your_db_user
+      - PASSWORD=your_db_password
+      - DB_HOST=postgres
+      - PORT=5432
+      - API_KEY=your_api_key
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+ mf_front:
+    build:
+      context: //path/to/the/front/directory/in/the/project
+    image: front
+    container_name: front_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+```
+
+You can create the docker-compose wherever you want but make sure to replace paths to the Dockerfiles with your own absolute paths.  
+Also, you must replace environnements variables by your owns, especially the Eden AI API KEY.  
+
+    If you don't have Eden AI API KEY :  
+        > Visit the Eden AI website.  
+        > Register for an account and retrieve your API key from the user dashboard.  
+
+3. Run the docker-compose file:  
 ```bash
 cd path/to/your/docker-compose/file
 docker-compose up -d
 ```
 
-4. Run the Mateo application
+4. Run the Mateo application  
 Open you browser and go to http://localhost:8080 (if you didn't change HOST and PORT in the docker-compose).
