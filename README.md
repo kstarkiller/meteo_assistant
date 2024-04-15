@@ -123,10 +123,12 @@ Also, you must replace environnements variables by your owns, especially the Ede
         > Visit the Eden AI website.  
         > Register for an account and retrieve your API key from the user dashboard.  
 
-3. Create a logs/ directory
+3. Create a logs/ and a logs/store/ directories
 ```bash
 cd weather_report_gen/
 mkdir logs
+cd logs/
+mkdir store
 ```
 
 4. Copy meteofrance_data/cities.py into weather_report_gen
