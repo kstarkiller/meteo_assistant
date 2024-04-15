@@ -123,11 +123,23 @@ Also, you must replace environnements variables by your owns, especially the Ede
         > Visit the Eden AI website.  
         > Register for an account and retrieve your API key from the user dashboard.  
 
-3. Run the docker-compose file:  
+3. Create a logs/ directory
+```bash
+cd weather_report_gen/
+mkdir logs
+```
+
+4. Copy meteofrance_data/cities.py into weather_report_gen
+```bash
+cd ..
+cp meteofrance_data/cities.py weather_report_gen/
+```
+
+5. Run the docker-compose file:  
 ```bash
 cd path/to/your/docker-compose/file
 docker-compose up -d
 ```
 
-4. Run the Mateo application  
+6. Run the Mateo application  
 Open you browser and go to http://localhost:8080 (if you didn't change HOST and PORT in the docker-compose).
